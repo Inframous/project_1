@@ -1,0 +1,11 @@
+## This playbook is not in use ##
+---
+- name: Add J_Agent SSH Key Fingerprint To Jenkins-Controller
+  hosts: Jenkins-Controller
+  become: false
+  remote_user: ubuntu
+  tasks:
+    - name: Adding Prod server(s) fingerprint to known_hosts
+      shell: |
+        ssh-keyscan -t rsa 10.123.1.11 >> ~/.ssh/known_hosts
+## This playbook is not in use ##

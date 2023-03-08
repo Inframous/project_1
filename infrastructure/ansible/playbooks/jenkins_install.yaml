@@ -1,0 +1,26 @@
+## This playbook is not in use ##
+---
+- name: Create jenkins_home directory (J_CONTROLLER)
+  hosts: Jenkins-Controller
+  become: false
+  remote_user: ubuntu
+  tasks:
+    - name: Run command
+      shell: mkdir /home/ubuntu/jenkins_home 
+
+- name: Start the Jenkins container
+  hosts: Jenkins-Controller
+  remote_user: ubuntu
+  become: true
+  tasks:
+    - name: Run Jenkins container
+      docker_container:
+        name: jenkins
+        image: jenkins/jenkins:lts
+        restart_policy: always
+        ports:
+          - "8080:8080"
+          - "50000:50000"
+        volumes:
+          - /home/ubuntu/jenkins_home:/var/jenkins_home
+## This playbook is not in use ##

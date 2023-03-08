@@ -1,0 +1,16 @@
+## This file is NOT in use.
+---
+- name: generate SSH key
+  hosts: Jenkins-Controller
+  remote_user: ubuntu
+  vars:
+    ssh_key_filename: id_rsa_jenkins_controller
+  tasks:
+    - name: generate SSH key "{{ssh_key_filename}}"
+      openssh_keypair:
+        path: "~/.ssh/{{ssh_key_filename}}"
+        type: rsa
+        size: 4096
+        state: present
+        force: no
+## This file is NOT in use.

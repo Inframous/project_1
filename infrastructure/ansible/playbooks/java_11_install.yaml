@@ -1,0 +1,10 @@
+---
+- hosts: J_Agent
+  become: yes
+  name: Java Install (J_AGENT)
+  tasks:
+    - name: Install Java
+      apt:
+        name:
+          - default-jre
+        update_cache: yes

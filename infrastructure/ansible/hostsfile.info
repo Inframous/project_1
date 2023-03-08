@@ -1,0 +1,1 @@
+### The actual ./hosts file will be genereated by Terraform when applying the plan.
