@@ -2,6 +2,7 @@
 - name: Custom Jenkins Install
   hosts: Jenkins-Controller
   vars:
+    - gitEmail: "will be populated by bash script"
     - CONTROLLER_IP: "will be populated by bash script"
     - awsID: "will be populated by bash script"
     - awsSECRET: "will be populated by bash script"
@@ -32,11 +33,16 @@
         path: ~/sq-jenkins-casc/Dockerfile
         regexp: '<aws_secret_access_key>'
         replace: "{{ awsSECRET }}"
-    - name: Injecting Controller IP
+    - name: Injecting Jenkins Address (IP)
       replace:
         path: ~/sq-jenkins-casc/casc.yaml
-        regexp: '<prod1_ip>'
-        replace: "{{ CONTROLLER_IP }}"
+        regexp: '<CONTROLLER_IP>'
+        replace: "http://{{ CONTROLLER_IP }}:8080/"
+    - name: Injecting Email Addresss
+      replace:
+        path: ~/sq-jenkins-casc/casc.yaml
+        regexp: 'EMAIL_ADDRESS'
+        replace: "{{ gitEmail }}"
     - name: Injecting PROD1 IP
       replace:
         path: ~/sq-jenkins-casc/casc.yaml
@@ -64,6 +70,6 @@
         sudo docker exec -i jencasc bash -c 'echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> /var/jenkins_home/.ssh/known_hosts'
         sudo docker exec -i jencasc bash -c 'echo "github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=" >> /var/jenkins_home/.ssh/known_hosts'
         sudo docker exec -i jencasc bash -c 'echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" >> /var/jenkins_home/.ssh/known_hosts'
-    # - name: "Final Cleanup. (so no secrets will be left behind)"
-    #   shell: |
-    #     sudo rm -r sq-jenkins-casc
+    - name: "Final Cleanup. (so no secrets will be left behind)"
+      shell: |
+        sudo rm -r sq-jenkins-casc

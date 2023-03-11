@@ -29,7 +29,7 @@ done < $INI_FILE
 
 awsID=${AWS_ACCESS_KEY_ID}
 awsSECRET=${AWS_SECRET_ACCESS_KEY}
-
+gitEmail=$(git config --global user.email)
 
 ## Create RSA key pair
 echo "Creating SSH keys."
@@ -97,6 +97,7 @@ ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu \
 --extra-vars "CONTROLLER_IP=${J_CONTROLLER}" \
 --extra-vars "awsID=${awsID}" \
 --extra-vars "awsSECRET=${awsSECRET}" \
+--extra-vars "gitEmail=${gitEmail}" \
 ansible/playbooks/custom_jenkins_install.yaml
 
 
