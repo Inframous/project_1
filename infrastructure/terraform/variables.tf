@@ -1,6 +1,6 @@
 variable "instance_names" {
   type = map(string)
-  default = {10:"Jenkins_Controller", 11: "J_Agent",12: "Prod1",13: "Prod2"}
+  default = {10:"Jenkins_Controller",11: "Prod1",12: "Prod2"}
 }
 
 variable "public_key" {

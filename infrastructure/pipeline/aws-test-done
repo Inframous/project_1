@@ -1,5 +1,5 @@
   pipeline {
-    agent { label "J_Agent" }
+    agent { label "Prod1" }
     environment {
         SSH_CREDENTIALS = "ssh-Jenkins-Controller"
         AWS_CREDENTIALS = "aws-Jenkins-Controller"
@@ -11,6 +11,9 @@
         GIT_SSH_CREDENTIALS = 'ssh-GitHub'
         GIT_REPO_URL_HTTPS = "https://github.com/Inframous/project_1.git"
         GIT_REPO_URL_SSH = "git@github.com:Inframous/project_1.git"
+    }
+    triggers {
+        githubPush()
     }
     stages {
         // Cloning the repo, this also connects the job with GitHub's WebHook
@@ -30,7 +33,7 @@
             // Building the app's image
             steps{
                 sh """
-                sudo docker build -t my-app .
+                sudo docker build -t my-test-app .
                 """
                 }
             }
@@ -38,7 +41,7 @@
             // Launching a container and running a test.
             steps{
                 script {
-                    def result = sh(script: 'sudo docker run --rm -p 5000:5000 my-app /bin/sh -c "python -m unittest discover"', returnStatus: true)
+                    def result = sh(script: 'sudo docker run --rm -p 5000:5000 my-test-app /bin/sh -c "python -m unittest discover"', returnStatus: true)
                     if (result == 0) {
                     env.RESULT = "SUCCESS"
                         }
@@ -46,6 +49,14 @@
                         env.RESULT = "FAIL"
                         }
                     }
+                }
+            }
+        stage('Clean-Up'){
+            // Building the app's image
+            steps{
+                sh """
+                sudo docker image rm my-test-app .
+                """
                 }
             }
         stage('Logging') {

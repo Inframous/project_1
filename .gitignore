@@ -7,7 +7,7 @@ app/__pycache__/
 app/__pycache__
 
 infrastructure/keys
-
+infrastructure/keys/**
 terraform.tfstate
 **/*.tfstate
 

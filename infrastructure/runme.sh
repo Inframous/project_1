@@ -58,8 +58,8 @@ fi
 ## Terrform apply
 echo "Creating infrastructure on AWS, this might take some time..."
 cd terraform
-terraform init >/dev/null 2>&1  ## This has lots of outputs, redirecting stdout to null and leaving stderr to the screen.
-terraform apply -auto-approve >/dev/null 2>&1 ## This has lots of outputs, redirecting stdout to null and leaving stderr to the screen.
+terraform init # >/dev/null 2>&1  ## This has lots of outputs, redirecting stdout to null and leaving stderr to the screen.
+terraform apply -auto-approve # >/dev/null 2>&1 ## This has lots of outputs, redirecting stdout to null and leaving stderr to the screen.
 cd ..
 echo "Infrastrucure is up, configuring servers ..."
 echo ""
@@ -69,10 +69,9 @@ echo "Adding SSH Key fingerprints ..."
 
 # Collecting ec2 ips from hosts file
 J_CONTROLLER=$(cat ansible/hosts | sed '2!d')
-J_AGENT=$(cat ansible/hosts | sed '4!d')
-PROD1=$(cat ansible/hosts | sed '6!d')
-PROD2=$(cat ansible/hosts | sed '8!d')
-HOSTS=($J_CONTROLLER $J_AGENT $PROD1 $PROD2)
+PROD1=$(cat ansible/hosts | sed '4!d')
+PROD2=$(cat ansible/hosts | sed '5!d')
+HOSTS=($J_CONTROLLER $PROD1 $PROD2)
 
 ## Scan ssh key fingerprint from all EC2 intsance 
 ## into the ~/.ssh/known_hosts files of the ansible controller.
@@ -90,21 +89,12 @@ echo "Running ansible tasks ..."
 ## Docker
 ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu ansible/playbooks/docker_install.yaml
 
-## Jenkins (Moved to custom_jenkins_install)
-# ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu ansible/playbooks/jenkins_install.yaml
-
-## Java on agent
-ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu ansible/playbooks/java_11_install.yaml
-
-## awscli on agent
-ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu ansible/playbooks/z-aws-cli.yaml
-
-## SSH Fingerprint (agent)
-ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu ansible/playbooks/ssh_fingerprint_agent.yaml
+## Insatalling Java & AwsCLI on Prod1 and Prod2
+ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu ansible/playbooks/production_machines.yaml
 
 ## Running the Jenkins CasC palybook and injecting variable to it.
 ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu \
---extra-vars "J_Agent=${J_AGENT}" \
+--extra-vars "CONTROLLER_IP=${J_CONTROLLER}" \
 --extra-vars "awsID=${awsID}" \
 --extra-vars "awsSECRET=${awsSECRET}" \
 ansible/playbooks/custom_jenkins_install.yaml

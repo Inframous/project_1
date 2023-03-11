@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo """Please wait... 
-Tearing down the infrastructure, distroying EC2s, Buckets and Tables."""
+Tearing down the infrastructure, destroying EC2s, Buckets and Tables."""
 
 cd terraform
 terraform destroy -auto-approve >/dev/null 2>&1

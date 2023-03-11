@@ -1,5 +1,5 @@
 ---
-- hosts: Prod1, Prod2, Jenkins-Controller, J_Agent
+- hosts: Jenkins-Controller, Prod
   name: Docker Installation (ALL HOSTS)
   become: yes
   tasks:

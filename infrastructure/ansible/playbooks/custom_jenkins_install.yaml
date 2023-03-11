@@ -2,7 +2,7 @@
 - name: Custom Jenkins Install
   hosts: Jenkins-Controller
   vars:
-    - J_Agent: "will be populated by bash script"
+    - CONTROLLER_IP: "will be populated by bash script"
     - awsID: "will be populated by bash script"
     - awsSECRET: "will be populated by bash script"
   become: false
@@ -32,15 +32,21 @@
         path: ~/sq-jenkins-casc/Dockerfile
         regexp: '<aws_secret_access_key>'
         replace: "{{ awsSECRET }}"
-    - name: Injecting J_Agent IP
+    - name: Injecting Controller IP
       replace:
         path: ~/sq-jenkins-casc/casc.yaml
-        regexp: '<j_agent_ip>'
+        regexp: '<prod1_ip>'
+        replace: "{{ CONTROLLER_IP }}"
+    - name: Injecting PROD1 IP
+      replace:
+        path: ~/sq-jenkins-casc/casc.yaml
+        regexp: '<prod1_ip>'
         replace: "10.123.1.11"
-    # - name: "Container Cleanup"
-    #   shell: |
-    #     sudo docker stop jencasc && sudo docker rm jencasc && sudo docker image rm jenkins:casc 
-    #   ignore_errors: true
+    - name: Injecting PROD2 IP
+      replace:
+        path: ~/sq-jenkins-casc/casc.yaml
+        regexp: '<prod2_ip>'
+        replace: "10.123.1.12"
     - name: "Building and Deploying The Container"
       shell: |
         cd ~/sq-jenkins-casc
@@ -53,7 +59,6 @@
       shell: |
         sudo docker exec -i jencasc bash -c "ssh-keyscan -t rsa 10.123.1.11 >> /var/jenkins_home/.ssh/known_hosts"
         sudo docker exec -i jencasc bash -c "ssh-keyscan -t rsa 10.123.1.12 >> /var/jenkins_home/.ssh/known_hosts"
-        sudo docker exec -i jencasc bash -c "ssh-keyscan -t rsa 10.123.1.13 >> /var/jenkins_home/.ssh/known_hosts"
     - name: Adding GitHub Fingerprint
       shell: |
         sudo docker exec -i jencasc bash -c 'echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> /var/jenkins_home/.ssh/known_hosts'

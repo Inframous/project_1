@@ -42,8 +42,8 @@ resource "aws_lb_target_group" "sql_proj1_target_group" {
 
 resource "aws_lb_target_group_attachment" "sql_proj1_lb_tg_attachments" {
   for_each = {
-    "instance-1" = aws_instance.dev_node["12"].id
-    "instance-2" = aws_instance.dev_node["13"].id
+    "instance-1" = aws_instance.dev_node["11"].id
+    "instance-2" = aws_instance.dev_node["12"].id
   }
 
   target_group_arn = aws_lb_target_group.sql_proj1_target_group.arn
