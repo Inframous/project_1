@@ -70,7 +70,7 @@ pipeline {
         GIT_REPO_URL_SSH = "git@github.com:Inframous/project_1.git"
     }
     parameters {
-        choice(name: 'KEY', choices: ['ONE', 'TWO', 'BOTH'], description: 'Select which agent(s) to run on')
+        choice(name: 'KEY', choices: ['ONE', 'TWO', 'BOTH'], description: 'Select which agent(s) to run on', defaultValue:'BOTH')
     }
     stages {
         stage('Input Key') {
