@@ -51,14 +51,6 @@
                     }
                 }
             }
-        stage('Clean-Up'){
-            // Building the app's image
-            steps{
-                sh """
-                sudo docker image rm my-test-app .
-                """
-                }
-            }
         stage('Logging') {
             steps {
                 script {
