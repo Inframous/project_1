@@ -36,10 +36,9 @@ Point your browser to said URL, and log on to the now available Jenkins-Controll
 
 ## Terraform
 
-Terraform will deploy 4 EC2 instances within their own VPC, 2 Subnets, A Security Group, inbound and outbound rules (All Traffic), and dedicated Subnet along with the necessary ssh keys, it will create a S3 Bucket, a DynamoDB table and finally, it will create an Application Load Balancer.
+Terraform will deploy 3 EC2 instances within their own VPC, 2 Subnets, A Security Group, inbound and outbound rules (All Traffic), and dedicated Subnet along with the necessary ssh keys, it will create a S3 Bucket, a DynamoDB table and finally, it will create an Application Load Balancer.
 ##### The EC2s are named as follows:
 - Jenkins-Controller
-- J_Agent (Jenkins Agent)
 - Prod1
 - Prod2
 
@@ -55,9 +54,7 @@ The Terraform files are divided by subjects for easier use (Network,DynamoDB, S3
 
 Once the infrastructure is ready, we’ll run the following Ansible Playbooks:
 - docker_install.yaml → Will install Docker on all instances.
-- java_install.yaml → Will install ‘default-jre’ on the Jenkins Agent.
-- z-aws-cli.yaml → Will install awscli on the Jenkins-Agent.
-- ssh_fingerprint_agent.yaml → Will add the ssh key fingerprint to the Agent’s known_hosts 
+- java_install.yaml 
 - custom_jenkins_install.yaml → Will pull a git repo, build and deploy a Jenkins Docker Container, 
 that was pre configured using the Configuration as Code plugin on the EC2 named Jenkins-Controller.
 

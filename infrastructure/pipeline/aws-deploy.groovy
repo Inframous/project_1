@@ -3,10 +3,8 @@ pipelineJob('AWS-Deploy') {
         cps {
         script('''\
             pipeline {
-                agent { label 'Prod1' }
+                agent { label 'Prod1' } <<--- Set to 'Prod1', 'Prod2' or 'all' to decide to which production server you'd like to deploy.
                 environment {
-                    KEY = 'BOTH' // <<--- Set to 'Prod1', 'Prod2' or 'BOTH' to decide to which production server you'd like to deploy.
-                    
                     AWS_CREDENTIALS = 'aws-Jenkins-Controller' // << aws credentials
                     AWS_REGION = "eu-central-1" 
                     AWS_BUCKET_NAME = "sq-proj1-bucket"
@@ -61,8 +59,8 @@ pipelineJob('AWS-Deploy') {
                         // uploading the parsed data to an item within the DynamoDB table,
                         // deleting the csv file.
                         steps {
-                            withAWS(credentials: 'aws-Jenkins-Controller', region: 'eu-central-1') {
-                                sh """
+                            withAWS(credentials: "${AWS_CREDENTIALS}", region: "${AWS_REGION}") {
+                                sh '''
                                     wget https://"${AWS_BUCKET_NAME}".s3.eu-central-1.amazonaws.com/report.csv
                                     input=\$(tail -n 1 report.csv) 
                                     TestId="\$((\$(wc report.csv -l | awk '{ print \$1 }') - 1))"
@@ -78,7 +76,7 @@ pipelineJob('AWS-Deploy') {
                                     '{"TestId": {"S": "'\$TestId'"}, "TestDate": {"S": "'\$TestDate'"}, "TestResult": {"S": "'\$TestResult'"}, "TestUser": {"S": "'\$TestUser'"}}' \
                                     --return-consumed-capacity TOTAL
                                     rm report.csv
-                                """
+                                '''
                             }
                         }
                     }
