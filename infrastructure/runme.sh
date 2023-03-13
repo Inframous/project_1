@@ -101,10 +101,10 @@ ansible-playbook -i ansible/hosts --key-file keys/sq-proj1-ssh -u ubuntu \
 ansible/playbooks/custom_jenkins_install.yaml
 
 
-
+LOAD_BALANCER_IP=$(tail -1 ansible/loadbalancer)
 echo """
 Infrastructure and servers are up and configured.
-head over to http:/${J_CONTROLLER}:8080 and view the Jenkins installation and its jobs.
-
+head over to http://${J_CONTROLLER}:8080 and view the Jenkins installation and its jobs.
+Oce you ran them, you can also head to the Load-Balancer's IP to checkout the service : http://${LOAD_BALANCER_IP}/
 To tear everything down simply run './stopme.sh' and wait for the proccess to finish.
 """
